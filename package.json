@@ -1,0 +1,11 @@
+{
+    "name": "rideways",
+    "version": "1.0.0",
+    "description": "Rideways API Server",
+    "main": "index.js",
+    "author": "Mayank",
+    "dependencies": {
+        "express": "^4.17.1",
+        "python-shell": "^1.0.8"
+    }
+}
