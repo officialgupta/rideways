@@ -10,7 +10,6 @@ app.listen(port, () => {
 
 function validate(pickup, dropoff, passengers) {
     var error = [];
-    var validateLatLng = new RegExp("^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}");
     if (pickup == null){
         error.push("pickup query parameter cannot be empty")
     }
@@ -54,7 +53,11 @@ app.get("/", (req, res) => {
         }
 
         results = results.map(jsonify);
-        return res.json({ results });
+        if (results.length > 0){
+            return res.json({ results });
+        } else {
+            return res.json({Empty:"no returned taxis"});
+        }
     });
 });
 

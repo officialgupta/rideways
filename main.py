@@ -1,5 +1,7 @@
 import requests
 import sys
+from operator import itemgetter
+
 baseUrl = "https://techtest.rideways.com/"
 suppliers = ["dave", "eric", "jeff"]
 cars = {
@@ -72,8 +74,10 @@ if useJeff:
             option['supplier'] = "Jeff"
         combinedOptions = combinedOptions + optionsJeff
 
-pruned = {pruned['car_type']:pruned for pruned in sorted(combinedOptions, reverse=True, key=lambda dict: dict['price'])}.values()
+pruned = {pruned['car_type']:pruned for pruned in combinedOptions}.values()
 
-for option in pruned:
+prunedSort = sorted(pruned, reverse=True, key=itemgetter("price"))
+
+for option in prunedSort:
     if (int(cars[option['car_type']]) >= int(passengers)):
         print(option['car_type'] + " - " + str(option['supplier']) + " - " + str(option['price']))

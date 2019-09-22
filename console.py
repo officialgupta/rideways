@@ -1,5 +1,6 @@
 import requests
 import sys
+from operator import itemgetter
 
 baseUrl = "https://techtest.rideways.com/"
 suppliers = ["dave", "eric", "jeff"]
@@ -58,7 +59,6 @@ except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e
     print(e)
     useJeff = False
 
-print("------------------------------")
 if useDave:
     if "error" in jsonDave:
         print("Error : Dave supplier api error : " + jsonDave['error'])
@@ -89,8 +89,12 @@ if useJeff:
             option['supplier'] = "Jeff"
         combinedOptions = combinedOptions + optionsJeff
 
-pruned = {pruned['car_type']:pruned for pruned in sorted(combinedOptions, reverse=True, key=lambda dict: dict['price'])}.values()
+print("------------------------------")
 
-for option in pruned:
+pruned = {pruned['car_type']:pruned for pruned in combinedOptions}.values()
+
+prunedSort = sorted(pruned, reverse=True, key=itemgetter("price"))
+
+for option in prunedSort:
     if (int(cars[option['car_type']]) >= int(passengers)):
         print(option['car_type'] + " - " + str(option['supplier']) + " - " + str(option['price']))
