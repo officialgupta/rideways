@@ -1,7 +1,5 @@
 import requests
 import sys
-
-# fixed constants
 baseUrl = "https://techtest.rideways.com/"
 suppliers = ["dave", "eric", "jeff"]
 cars = {
@@ -12,6 +10,10 @@ cars = {
     'LUXURY_PEOPLE_CARRIER' : 6,
     'MINIBUS' : 16,
 }
+useDave = True
+useEric = True
+useJeff = True
+combinedOptions = []
 
 if (len(sys.argv)) < 3:
     print("Error : please enter three values for pickup and dropoff in the pattern; 'pickup-lat,pickup-long' , 'dropoff-lat,dropoff-long' , number-of-passengers")
@@ -21,24 +23,57 @@ else:
     dropoff = sys.argv[2]
     passengers = sys.argv[3]
 
-print("-------QUERY INFO-------------")
-print("pickup: " + pickup)
-print("dropoff: " + dropoff)
-print("passengers: " + passengers)
-print("------------------------------")
+formedUrlDave = baseUrl + suppliers[0] + "?pickup=" + pickup + "&dropoff=" + dropoff
+try:
+    requestDave = requests.get(formedUrlDave, timeout=2)
+    jsonDave = requestDave.json()
+except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e:
+    useDave = False
 
-formedUrl = baseUrl + suppliers[0] + "?pickup=" + pickup + "&dropoff=" + dropoff
-request = requests.get(formedUrl)
-json = request.json()
 
-print("------------------------------")
+formedUrlEric = baseUrl + suppliers[1] + "?pickup=" + pickup + "&dropoff=" + dropoff
+try:
+    requestEric = requests.get(formedUrlEric, timeout=2)
+    jsonEric = requestEric.json()
+except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e:
+    useEric = False
 
-options = json['options']
+formedUrlJeff = baseUrl + suppliers[2] + "?pickup=" + pickup + "&dropoff=" + dropoff
+try:
+    requestJeff = requests.get(formedUrlJeff, timeout=2)
+    jsonJeff = requestJeff.json()
+except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e:
+    useJeff = False
 
-sortedOptions = sorted(options, key = lambda i: i['price'], reverse=True)
-
-for option in sortedOptions:
-    if (int(cars[option['car_type']]) >= int(passengers)):
-        print(option['car_type'] + " - " + str(option['price']))
+if useDave:
+    if "error" in jsonDave:
+        useDave = False
     else:
-        # print("SKIPPED")
+        optionsDave = jsonDave['options']
+        for option in optionsDave:
+            option['supplier'] = "Dave"
+        combinedOptions = combinedOptions + optionsDave
+
+if useEric:
+    if "error" in jsonEric:
+        useEric = False
+    else:
+        optionsEric = jsonEric['options']
+        for option in optionsEric:
+            option['supplier'] = "Eric"
+        combinedOptions = combinedOptions + optionsEric
+
+if useJeff:
+    if "error" in jsonJeff:
+        useJeff = False
+    else:
+        optionsJeff = jsonJeff['options']
+        for option in optionsJeff:
+            option['supplier'] = "Jeff"
+        combinedOptions = combinedOptions + optionsJeff
+
+pruned = {pruned['car_type']:pruned for pruned in sorted(combinedOptions, reverse=True, key=lambda dict: dict['price'])}.values()
+
+for option in pruned:
+    if (int(cars[option['car_type']]) >= int(passengers)):
+        print(option['car_type'] + " - " + str(option['supplier']) + " - " + str(option['price']))

@@ -1,8 +1,6 @@
 import requests
 import sys
-import pprint
 
-# fixed constants
 baseUrl = "https://techtest.rideways.com/"
 suppliers = ["dave", "eric", "jeff"]
 cars = {
@@ -26,19 +24,19 @@ else:
     dropoff = sys.argv[2]
     passengers = sys.argv[3]
 
-# print("-------QUERY INFO-------------")
-# print("pickup: " + pickup)
-# print("dropoff: " + dropoff)
-# print("passengers: " + passengers)
-# print("------------------------------")
+print("-------QUERY INFO-------------")
+print("pickup: " + pickup)
+print("dropoff: " + dropoff)
+print("passengers: " + passengers)
+print("------------------------------")
 
 formedUrlDave = baseUrl + suppliers[0] + "?pickup=" + pickup + "&dropoff=" + dropoff
 try:
     requestDave = requests.get(formedUrlDave, timeout=2)
     jsonDave = requestDave.json()
 except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e:
-    # print("Skipping supplier Dave - ")
-    # print(e)
+    print("Skipping supplier Dave - ")
+    print(e)
     useDave = False
 
 
@@ -47,8 +45,8 @@ try:
     requestEric = requests.get(formedUrlEric, timeout=2)
     jsonEric = requestEric.json()
 except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e:
-    # print("Skipping supplier Eric - ")
-    # print(e)
+    print("Skipping supplier Eric - ")
+    print(e)
     useEric = False
 
 formedUrlJeff = baseUrl + suppliers[2] + "?pickup=" + pickup + "&dropoff=" + dropoff
@@ -56,14 +54,14 @@ try:
     requestJeff = requests.get(formedUrlJeff, timeout=2)
     jsonJeff = requestJeff.json()
 except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e:
-    # print("Skipping supplier Jeff - ")
-    # print(e)
+    print("Skipping supplier Jeff - ")
+    print(e)
     useJeff = False
 
-# print("------------------------------")
+print("------------------------------")
 if useDave:
     if "error" in jsonDave:
-        # print("Error : Dave supplier api error : " + jsonDave['error'])
+        print("Error : Dave supplier api error : " + jsonDave['error'])
         useDave = False
     else:
         optionsDave = jsonDave['options']
@@ -73,7 +71,7 @@ if useDave:
 
 if useEric:
     if "error" in jsonEric:
-        # print("Error : Eric supplier api error : " + jsonEric['error'])
+        print("Error : Eric supplier api error : " + jsonEric['error'])
         useEric = False
     else:
         optionsEric = jsonEric['options']
@@ -83,7 +81,7 @@ if useEric:
 
 if useJeff:
     if "error" in jsonJeff:
-        # print("Error : Jeff supplier api error : " + jsonJeff['error'])
+        print("Error : Jeff supplier api error : " + jsonJeff['error'])
         useJeff = False
     else:
         optionsJeff = jsonJeff['options']
