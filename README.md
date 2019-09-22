@@ -1,4 +1,4 @@
-# BookingGo Techincal Test Submission
+# BookingGo Technical Test Submission
 
 ## Part 1 - Console application
 
