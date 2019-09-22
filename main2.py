@@ -16,7 +16,7 @@ cars = {
 useDave = True
 useEric = True
 useJeff = True
-combinedOptions = {}
+combinedOptions = []
 
 if (len(sys.argv)) < 3:
     print("Error : please enter three values for pickup and dropoff in the pattern; 'pickup-lat,pickup-long' , 'dropoff-lat,dropoff-long' , number-of-passengers")
@@ -40,7 +40,7 @@ except (requests.exceptions.ConnectTimeout,requests.exceptions.ReadTimeout) as e
     print("Skipping supplier Dave - ")
     print(e)
     useDave = False
-    
+
 
 formedUrlEric = baseUrl + suppliers[1] + "?pickup=" + pickup + "&dropoff=" + dropoff
 try:
@@ -70,7 +70,7 @@ if useDave:
         for option in optionsDave:
             option['supplier'] = "Dave"
         combinedOptions = combinedOptions + optionsDave
-    
+
 if useEric:
     if "error" in jsonEric:
         print("Error : Eric supplier api error : " + jsonEric['error'])
@@ -91,11 +91,8 @@ if useJeff:
             option['supplier'] = "Jeff"
         combinedOptions = combinedOptions + optionsJeff
 
-pprint.pprint(combinedOptions)
-print(optionsDave.type)
-
 pruned = {pruned['car_type']:pruned for pruned in sorted(combinedOptions, reverse=True, key=lambda dict: dict['price'])}.values()
-    
+
 for option in pruned:
     if (int(cars[option['car_type']]) >= int(passengers)):
         print(option['car_type'] + " - " + str(option['supplier']) + " - " + str(option['price']))

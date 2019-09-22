@@ -13,6 +13,8 @@ app.get("/", (req, res, next) => {
 });
 
 var options = {
+    // pythonPath: '~/.pyenv/versions/3.7d.4/bin/python',
+    pythonOptions: ['-u'],
     args: ['51.470020,-0.454295', '3.410632,-2.157533', '5']
 };
 
